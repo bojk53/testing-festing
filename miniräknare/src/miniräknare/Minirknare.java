@@ -6,16 +6,16 @@ import javafx.scene.Scene;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.TextField;
 
-public class Minirknare extends Application{
-	
+public class Minirknare extends Application {
+
 	String inputText = "";
 	String tal = "";
 	double tal1 = 0;
 	double tal2 = 0;
-	
+	boolean aktiv = false;
+
 	public static void main(String args[]) {
 		launch(args);
 	}
@@ -55,34 +55,34 @@ public class Minirknare extends Application{
 		ButtonEXE.setPrefSize(50, 50);
 		Button ButtonCLEAR = new Button("C");
 		ButtonCLEAR.setPrefSize(50, 50);
-		
+
 		VBox box1 = new VBox();
 		box1.getChildren().addAll(Button1, Button4, Button7, Button0);
 		VBox box2 = new VBox();
-		box2.getChildren().addAll(Button2, Button5,Button8, ButtonCLEAR);
+		box2.getChildren().addAll(Button2, Button5, Button8, ButtonCLEAR);
 		VBox box3 = new VBox();
 		box3.getChildren().addAll(Button3, Button6, Button9, ButtonEXE);
 		VBox box4 = new VBox();
 		box4.getChildren().addAll(ButtonPlus, ButtonMinus, ButtonMult, ButtonDela);
-		
+
 		HBox box5 = new HBox();
-		box5.getChildren().addAll(box1,box2,box3,box4);
-		
+		box5.getChildren().addAll(box1, box2, box3, box4);
+
 		TextField input = new TextField();
 		input.setPrefSize(200, 50);
 		input.setEditable(false);
-		
+
 		BorderPane layout = new BorderPane();
 		layout.setTop(input);
 		layout.setCenter(box5);
-		
+
 		Scene scene = new Scene(layout, 189, 250);
-		
+
 		stage.setTitle("Miniräknare");
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
-		
+
 		Button1.setOnAction(event -> {
 			inputText += "1";
 			tal += "1";
@@ -133,31 +133,80 @@ public class Minirknare extends Application{
 			tal += "0";
 			input.setText(inputText);
 		});
-		ButtonPlus.setOnAction(event -> {
-			inputText += "+";
-			tal1 = Double.parseDouble(tal);
+		ButtonCLEAR.setOnAction(event -> {
+			inputText = "";
 			tal = "";
+			tal1 = 0;
+			aktiv = false;
 			input.setText(inputText);
+		});
+		ButtonPlus.setOnAction(event -> {
+			if(aktiv == false) {
+				inputText += "+";
+				tal1 = Double.parseDouble(tal);
+				tal = "";
+				input.setText(inputText);
+				aktiv = true;
+			}
 		});
 		ButtonMinus.setOnAction(event -> {
-			inputText += "-";
-			tal1 = Double.parseDouble(tal);
-			tal = "";
-			input.setText(inputText);
+			if(aktiv == false) {
+				inputText += "-";
+				tal1 = Double.parseDouble(tal);
+				tal = "";
+				input.setText(inputText);
+				aktiv = true;
+			}
 		});
 		ButtonMult.setOnAction(event -> {
-			inputText += "x";
-			tal1 = Double.parseDouble(tal);
-			tal = "";
-			input.setText(inputText);
+			if(aktiv == false) {
+				inputText += "x";
+				tal1 = Double.parseDouble(tal);
+				tal = "";
+				input.setText(inputText);
+				aktiv = true;
+			}
 		});
 		ButtonDela.setOnAction(event -> {
-			inputText += "/";
-			tal1 = Double.parseDouble(tal);
-			tal = "";
-			input.setText(inputText);
+			if(aktiv == false) {
+				inputText += "/";
+				tal1 = Double.parseDouble(tal);
+				tal = "";
+				input.setText(inputText);
+				aktiv = true;
+			}
 		});
-		
+		ButtonEXE.setOnAction(event -> {
+			double summa = 0;
+			boolean execute = false;
+			char c = 0;
+			for (int i = 0; i < inputText.length(); i++) {
+				if (inputText.charAt(i) == '+' || inputText.charAt(i) == '-' || inputText.charAt(i) == 'x'
+						|| inputText.charAt(i) == '/') {
+					execute = true;
+					c = inputText.charAt(i);
+				}
+			}
+			if (execute == true) {
+				tal2 = Double.parseDouble(tal);
+				if (c == '+') {
+					summa = tal1 + tal2;
+				} else if (c == '-') {
+					summa = tal1 - tal2;
+				} else if (c == 'x') {
+					summa = tal1 * tal2;
+				} else if (c == '/') {
+					summa = tal1 / tal2;
+				}
+				tal1 = summa;
+				tal2 = 0;
+				tal = Double.toString(tal1);
+				inputText = Double.toString(tal1);
+				input.setText(inputText);
+				aktiv = false;
+			}
+		});
+
 	}
 
 }
